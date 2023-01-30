@@ -3,12 +3,14 @@
     <v-navigation-drawer>
       <div class="m-2">
         <router-link
-          class="p-4 h-10 flex items-center hover:bg-slate-800 rounded-md"
-          :to="link.path"
+          class="p-4 h-10 flex items-center hover:bg-slate-800 rounded-md transition-all"
+          :to="{
+            name: link.path
+          }"
           v-for="link in links"
           :key="link.path"
         >
-          <v-icon :icon="link.icon"></v-icon>
+          <v-icon class="mr-4" :icon="link.icon"></v-icon>
           {{ link.title }}
         </router-link>
       </div>
@@ -35,7 +37,9 @@
     </v-app-bar>
 
     <v-main>
-      <slot />
+      <v-container>
+        <slot />
+      </v-container>
     </v-main>
   </v-app>
 </template>
@@ -49,14 +53,24 @@ interface Link {
 
 const links: Link[] = [
   {
-    path: "/",
-    icon: "mdiFolderHome",
+    path: "Home",
+    icon: "mdi-folder",
     title: "My Files",
   },
   {
     path: "Favourites",
-    icon: "mdiFolderHome",
+    icon: "mdi-folder-star",
     title: "Favourites",
   },
+  {
+    path: "Recycle",
+    icon: "mdi-recycle",
+    title: "Recycle Bin",
+  },
+  {
+    path: 'Shared',
+    icon: 'mdi-wifi ',
+    title: 'Shared Files'
+  }
 ];
 </script>

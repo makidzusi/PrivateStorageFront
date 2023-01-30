@@ -9,7 +9,32 @@ import HomePage from "@/pages/HomePage/index.vue";
 const routes: RouteRecordRaw[] = [
   {
     path: "/",
+    name: "Home",
     component: HomePage,
+    meta: {
+      layout: "MainLayout",
+    },
+  },
+  {
+    path: "/favourites",
+    name: "Favourites",
+    component: () => import('../pages/FavouritesPage/index.vue'),
+    meta: {
+      layout: "MainLayout",
+    },
+  },
+  {
+    path: "/recycle",
+    name: "Recycle",
+    component: () => import('../pages/RecyclePage/index.vue'),
+    meta: {
+      layout: "MainLayout",
+    },
+  },
+  {
+    path: "/shared",
+    name: "Shared",
+    component: () => import('../pages/SharedPage/index.vue'),
     meta: {
       layout: "MainLayout",
     },
