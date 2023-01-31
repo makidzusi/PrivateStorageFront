@@ -1,37 +1,30 @@
 <template>
   <v-list
+    rounded="xl"
+    v-on-click-outside="handleClickOutside"
     :style="{
       top: props.y + 'px',
       left: props.x + 'px',
     }"
     class="!fixed"
-    :items="items"
     item-title="name"
     item-value="id"
-  ></v-list>
+  >
+    <slot />
+  </v-list>
 </template>
 
 <script setup lang="ts">
+import { vOnClickOutside } from "@vueuse/components";
 interface Props {
-  id: string;
   x?: number;
   y?: number;
 }
-
-const items = [
-  {
-    name: "Rename",
-    id: 1,
-  },
-  {
-    name: "Delete",
-    id: 2,
-  },
-  {
-    name: "Move",
-    id: 3,
-  },
-];
-
 const props = defineProps<Props>();
+const emit = defineEmits<{
+  (e: "close", value: boolean): void;
+}>();
+const handleClickOutside = (): void => {
+  emit("close", false);
+};
 </script>

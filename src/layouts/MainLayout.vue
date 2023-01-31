@@ -1,19 +1,36 @@
 <template>
   <v-app theme="dark">
     <v-navigation-drawer>
-      <div class="m-2">
-        <router-link
-          class="p-4 h-10 flex items-center hover:bg-slate-800 rounded-md transition-all"
-          :to="{
-            name: link.path
-          }"
-          v-for="link in links"
-          :key="link.path"
+      <v-list>
+        <v-list-subheader>Navigation</v-list-subheader>
+        <div class="mb-2 flex flex-col gap-2 p-2">
+          <v-btn block color="primary" prepend-icon="mdi-upload">Upload</v-btn>
+          <CreateFolderModal>
+            <v-btn
+            block
+            variant="outlined"
+            prepend-icon="mdi-folder-plus"
+            color="secondary"
+            >Create</v-btn
+          >
+          </CreateFolderModal>
+
+        </div>
+        <v-list-item
+          @click="$router.push({ name: item.path })"
+          v-for="(item, i) in links"
+          :key="i"
+          :value="item"
+          active-color="primary"
+          rounded="shaped"
         >
-          <v-icon class="mr-4" :icon="link.icon"></v-icon>
-          {{ link.title }}
-        </router-link>
-      </div>
+          <template v-slot:prepend>
+            <v-icon :icon="item.icon"></v-icon>
+          </template>
+
+          <v-list-item-title v-text="item.title"></v-list-item-title>
+        </v-list-item>
+      </v-list>
     </v-navigation-drawer>
 
     <v-app-bar
@@ -45,6 +62,7 @@
 </template>
 
 <script setup lang="ts">
+import CreateFolderModal from '@/components/CreateFolderModal/index.vue'
 interface Link {
   path: string;
   title: string;
@@ -68,9 +86,9 @@ const links: Link[] = [
     title: "Recycle Bin",
   },
   {
-    path: 'Shared',
-    icon: 'mdi-wifi ',
-    title: 'Shared Files'
-  }
+    path: "Shared",
+    icon: "mdi-wifi ",
+    title: "Shared Files",
+  },
 ];
 </script>
