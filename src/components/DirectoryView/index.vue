@@ -1,23 +1,52 @@
 <template>
   <div class="mt-2 h-full bg-neutral-800 p-2 rounded">
-    <h2 class="text-xl hover:opacity-25 cursor-pointer transition-all">
-      <v-icon icon="mdi-arrow-left"></v-icon>
-      {{ props.directory.title }}
-    </h2>
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl hover:opacity-25 cursor-pointer transition-all">
+        <v-icon icon="mdi-arrow-left"></v-icon>
+        {{ props.directory.title }}
+      </h2>
+      <v-btn
+        variant="outlined"
+        icon
+        color="secondary"
+        @click="isListView = !isListView"
+      >
+        <v-icon v-if="!isListView">mdi-view-list-outline</v-icon>
+        <v-icon v-else>mdi-view-grid-outline</v-icon>
+      </v-btn>
+    </div>
     <div class="flex gap-5 select-none flex-wrap" @contextmenu.prevent="handle">
-      <template v-for="child in props.directory.children" :key="child.id">
-        <Directory
-          @click="routeToDir(child as DirectoryDTO)"
-          @contextmenu.prevent.stop="handleContextMenuEvent"
-          v-if="child.isDir"
-          :directory="(child as DirectoryDTO)"
-        />
-        <File
-          @contextmenu.prevent.stop="handleContextMenuEvent"
-          :file="(child as FileDTO)"
-          v-else
-        />
+      <template v-if="!isListView">
+        <template v-for="child in props.directory.children" :key="child.id">
+          <Directory
+            @click="routeToDir(child as DirectoryDTO)"
+            @contextmenu.prevent.stop="handleContextMenuEvent"
+            v-if="child.isDir"
+            :directory="(child as DirectoryDTO)"
+          />
+          <File
+            @contextmenu.prevent.stop="handleContextMenuEvent"
+            :file="(child as FileDTO)"
+            v-else
+          />
+        </template>
       </template>
+      <v-table class="w-full" v-else :hover="true">
+        <thead>
+          <tr>
+            <th class="text-left">File Name</th>
+            <th>Type</th>
+            <th class="text-left">ModifiedAt</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr @contextmenu.prevent.stop="handleContextMenuEvent" v-for="item in props.directory.children" :key="item.id">
+            <td>{{ item.title }}</td>
+            <td>{{ item?.isDir ? 'Directory': 'File' }}</td>
+            <td>{{ item.modifiedAt }}</td>
+          </tr>
+        </tbody>
+      </v-table>
       <ContextMenu
         @close="isShowMenu = $event"
         :x="event?.x"
@@ -44,24 +73,16 @@
         v-if="isShowDirSettingsMenu"
         @close="isShowDirSettingsMenu = false"
       >
-      <CreateFolderModal>
-        <v-list-item
-          active-color="primary"
-          rounded="xl"
-          value="createFolder"
-        >
-          <template v-slot:prepend>
-            <v-icon icon="mdi-folder-plus"></v-icon>
-          </template>
+        <CreateFolderModal>
+          <v-list-item active-color="primary" rounded="xl" value="createFolder">
+            <template v-slot:prepend>
+              <v-icon icon="mdi-folder-plus"></v-icon>
+            </template>
 
-          <v-list-item-title>Create folder</v-list-item-title>
-        </v-list-item>
-      </CreateFolderModal>
-      <v-list-item
-          active-color="primary"
-          rounded="xl"
-          value="uploadFiles"
-        >
+            <v-list-item-title>Create folder</v-list-item-title>
+          </v-list-item>
+        </CreateFolderModal>
+        <v-list-item active-color="primary" rounded="xl" value="uploadFiles">
           <template v-slot:prepend>
             <v-icon icon="mdi-upload"></v-icon>
           </template>
@@ -80,7 +101,7 @@ import FileDTO from "@/contracts/FileDTO";
 import Directory from "./components/Directory.vue";
 import File from "./components/File.vue";
 import ContextMenu from "@/components/ContextMenu/index.vue";
-import CreateFolderModal from '@/components/CreateFolderModal/index.vue';
+import CreateFolderModal from "@/components/CreateFolderModal/index.vue";
 
 interface Props {
   directory: DirectoryDTO;
@@ -89,6 +110,7 @@ interface Props {
 const event = ref<MouseEvent | null>(null);
 const isShowMenu = ref<boolean>(false);
 const isShowDirSettingsMenu = ref<boolean>(false);
+const isListView = ref(false);
 const emit = defineEmits<{
   (e: "route", value: DirectoryDTO): void;
 }>();

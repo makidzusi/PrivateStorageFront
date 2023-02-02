@@ -1,4 +1,5 @@
 import Directory from "@/contracts/DirectoryDTO";
+import FileDTO from "@/contracts/FileDTO";
 
 const getFolderByPathAsync = (_path: string): Promise<Directory> => {
   return new Promise<Directory>((resolve, reject) => {
@@ -21,7 +22,13 @@ const getFolderByIdAsync = (_id: string): Promise<Directory> => {
   });
 };
 
-export { getFolderByPathAsync, getFolderByIdAsync };
+const getStarredFilesAsync = (): Promise<Array<Directory | FileDTO>> => {
+  return new Promise<Array<Directory | FileDTO>>((resolve, reject) => {
+    resolve(dirs)
+  });
+}
+
+export { getFolderByPathAsync, getFolderByIdAsync, getStarredFilesAsync };
 const now = new Date().getTime();
 
 const dirs: Directory[] = [
